@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/bg"
+    tools:context="com.news.kikar.biosense.patient2">
+
+    <LinearLayout
+        android:id="@+id/screenTitle"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:weightSum="1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="PATIENT DATE"
+            android:gravity="left"
+            android:id="@+id/UserDetailsTitle"
+            android:textColor="#ffffff"
+            android:textSize="30dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/users_d"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="290dp"
+        android:layout_weight="0.85"
+        android:background="#83ffffff"
+        android:padding="10dp"
+        android:weightSum="1"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/C"
+        android:layout_above="@+id/bSwitchActivity">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="17dp"
+            android:text="GENDER"
+            android:id="@+id/gender"
+            android:paddingBottom="10dp"
+            android:textColor="#002e8a"
+            android:singleLine="false"
+            android:gravity="left"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="41dp"
+            android:inputType="textPersonName"
+            android:text="mail"
+            android:ems="10"
+            android:id="@+id/name"
+            android:textSize="17dp"
+            android:background="@drawable/edittext"
+            android:gravity="fill_horizontal"
+            android:drawableLeft="@drawable/ic_gender"
+            android:padding="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="MEDICL HISTORY"
+            android:id="@+id/p_id_text"
+            android:paddingBottom="10dp"
+            android:textColor="#002e8a"
+            android:paddingTop="10dp"
+            android:gravity="left"
+            android:textSize="17dp" />
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:background="@drawable/edittext"
+            android:ems="10"
+            android:id="@+id/p_id"
+            android:textSize="14dp"
+            android:gravity="fill_horizontal" android:padding="10dp"
+            android:layout_weight="0.95" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="IMPLANT FACILITY"
+            android:id="@+id/h_nameDD"
+            android:paddingBottom="10dp"
+            android:textColor="#002e8a"
+            android:paddingTop="10dp"
+            android:gravity="left"
+            android:textSize="17dp" />
+
+
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:background="@drawable/edittext"
+            android:text="bla bla"
+            android:textSize="17dp"
+            android:drawableLeft="@drawable/ic_medical"
+            android:gravity="fill_horizontal"
+            android:padding="10dp" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/C"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="right"
+        android:paddingTop="10dp">
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/bSwitchActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#ffffff"
+        android:background="@drawable/mybutton"
+        android:text="Return"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/users_d"
+        android:layout_alignEnd="@+id/users_d" />
+
+
+</RelativeLayout>
