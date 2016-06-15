@@ -55,7 +55,7 @@
             android:layout_weight="1" >
 
             <Button
-                android:id="@+id/clientimain"
+                android:id="@+id/clientimain3"
                 android:layout_width="0dip"
                 android:text="Analysis Reports"
                 android:drawableTop="@drawable/ic_anl"
@@ -67,7 +67,7 @@
                 android:textColor="#ffffff" />
 
             <Button
-                android:id="@+id/clientimain"
+                android:id="@+id/clientimain2"
                 android:layout_width="0dip"
                 android:text="Device Configuration"
                 android:drawableTop="@drawable/ic_settings2"
@@ -86,7 +86,7 @@
             android:layout_weight="1" >
 
             <Button
-                android:id="@+id/clientimain"
+                android:id="@+id/raw_ecg"
                 android:layout_width="0dip"
                 android:text="Monitor"
                 android:drawableTop="@drawable/ic_monitor"
@@ -98,7 +98,7 @@
                 android:textColor="#ffffff" />
 
             <Button
-                android:id="@+id/clientimain"
+                android:id="@+id/clientimain1"
                 android:layout_width="0dip"
                 android:text="settings"
                 android:drawableTop="@drawable/ic_settings"
