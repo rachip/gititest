@@ -73,7 +73,7 @@ public class MainActivity extends Activity
 
         try {
 
-            InputStream is = getResources().getAssets().open(/*"Dump9a" + ".bin"*/"ecg.txt");
+            InputStream is = getResources().getAssets().open("Dump9a" + ".bin");
 
             while (is.read(val, 0, 1) > 0) {
                 inputBuffer.add(val[0]);
@@ -266,7 +266,7 @@ public class MainActivity extends Activity
 
             }*/
 
-            NdefRecord record = NdefRecord.createMime("textt/plain",payload);
+            NdefRecord record = NdefRecord.createMime("text/plain",payload);
             records[0] = record;
 
         }
