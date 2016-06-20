@@ -39,7 +39,7 @@ public class Raw_ECG extends Activity implements View.OnTouchListener
     private XYSeries series1;
     private PointF minXY;
     private PointF maxXY;
-
+    ArrayList<Integer> data;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -50,6 +50,7 @@ public class Raw_ECG extends Activity implements View.OnTouchListener
        // Intent intent = new Intent(this, Lorentz_plot.class);
         // initialize our XYPlot reference:
         plot = (XYPlot) findViewById(R.id.plot);
+        data = (ArrayList<Integer>) getIntent().getSerializableExtra("data");
         readECG();
         plot.setVerticalScrollBarEnabled(true);
         // turn the above arrays into XYSeries':
@@ -101,8 +102,14 @@ public class Raw_ECG extends Activity implements View.OnTouchListener
     {
         int index=0;
         short val;
+        int val1;
 
-        try
+        for(int i=0;i<data.size();i++)
+        {
+            seriesList.add(data.get(i));
+        }
+
+       /* try
         {
 
             InputStream is = getResources().getAssets().open("ecg.txt");
@@ -110,8 +117,8 @@ public class Raw_ECG extends Activity implements View.OnTouchListener
             Scanner scan=new Scanner(is);
             while(scan.hasNextShort())
             {
-                val=scan.nextShort();
-                seriesList.add(val);
+                val1=scan.nextShort();
+                seriesList.add(val1);
                 index++;
                 if(index>1500)
                     break;
@@ -122,7 +129,7 @@ public class Raw_ECG extends Activity implements View.OnTouchListener
         }catch (IOException e)
         {
 
-        }
+        }*/
     }
 
     // Definition of the touch states

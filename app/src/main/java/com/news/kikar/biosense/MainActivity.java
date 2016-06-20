@@ -6,6 +6,8 @@ import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
+import android.nfc.Tag;
+import android.nfc.tech.Ndef;
 import android.os.Build;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -32,8 +34,8 @@ public class MainActivity extends Activity
     private Button switchActivityBtn;
     private Button switchActivityBtn1;
 
-    //Parser parser = new Parser();
-    //BuildMsg buildMsg = new BuildMsg();
+    Parser parser = new Parser();
+    BuildMsg buildMsg = new BuildMsg();
     ArrayList<Byte> inputBuffer = new ArrayList<Byte>();
     ArrayList<Byte> outMsgBuffer;
 
@@ -45,6 +47,9 @@ public class MainActivity extends Activity
     private ArrayList<Byte> recBytes=new  ArrayList<Byte>();
     private  int index=0;
     private OverScroller overScroller;
+    private  Tag tagFromIntent;
+    PatientData patientDataMsg;
+    RawEcgData rawEcgDataMsg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +68,8 @@ public class MainActivity extends Activity
             @Override
             public void onClick(View v) {
                 Intent intent1 = new Intent(getApplicationContext(), Raw_ECG.class);
+                intent1.putIntegerArrayListExtra("data", rawEcgDataMsg.data);
+
                 // disable default animation for new intent
                 startActivity(intent1);
             }
@@ -70,10 +77,9 @@ public class MainActivity extends Activity
 
 
         byte[] val = new byte[10];
-
         try {
 
-            InputStream is = getResources().getAssets().open("Dump9a" + ".bin");
+            InputStream is = getResources().getAssets().open("PatDatFull1.bin"/*"ecg.txt""Dump9a.bin"*/);
 
             while (is.read(val, 0, 1) > 0) {
                 inputBuffer.add(val[0]);
@@ -94,8 +100,9 @@ public class MainActivity extends Activity
             //This will be called if the message is sent successfully
             mNfcAdapter.setOnNdefPushCompleteCallback(this, this);
         }
-        // inputBuffer=buildMsg.buildMsgSetTime();
-        index=inputBuffer.size();
+       // parseMsg(inputBuffer);
+         //inputBuffer=buildMsg.buildMsgSetTime();
+
     }
 
     private void animatedStartActivity() {
@@ -112,49 +119,6 @@ public class MainActivity extends Activity
         return scanner.nextInt();
     }
 
-    public void addText(View view) throws IOException {
-
-
-        byte[] val = new byte[10];
-
-        try {
-
-            InputStream is = getResources().getAssets().open("Dump9a" + ".bin");
-            /// BufferedReader br = new BufferedReader(new InputStreamReader(is));
-/*        Scanner scan=new Scanner(is);
-        while(scan.hasNextShort())
-        {
-            val=scan.nextShort();
-            shortToSend.add(val);
-        }
-        scan.close();
-        is.close();*/
-
-            //updateTextViews();
-            while (is.read(val, 0, 1) > 0) {
-                inputBuffer.add(val[0]);
-            }
-            is.close();
-  /*    String st = "";
-        StringBuilder sb = new StringBuilder();
-        while ((st=br.readLine())!=null)
-        {
-            sb.append(st);
-        }*/
-            //   br.close();
-
-        } catch (IOException e) {
-
-        }
-        //parseInput();
-        //parser.test();
-        // parser.parseRateData(inputBuffer);
-        //parser.parsePatientData(inputBuffer);
-        //RawEcgData rawEcgDataMsg = parser.parseRawECGData(inputBuffer);
-        //outMsgBuffer = buildMsg.buildMsgSetTime();
-        //outMsgBuffer.clear();
-        //outMsgBuffer=buildMsg.buildMsgGetData(EcgDataType.STOP_TRANSMIT);
-    }
 
 
     //The array lists to hold our messages
@@ -231,7 +195,6 @@ public class MainActivity extends Activity
     }
 
 
-
     public NdefRecord[] createRecords() {
         short []array=new short[shortToSend.size()];
         byte[] payload=new byte[inputBuffer.size()];
@@ -299,8 +262,8 @@ public class MainActivity extends Activity
                     }
 
                 }
-                Toast.makeText(this, "Message Received " , Toast.LENGTH_LONG).show();
-                //updateTextViews();
+                Toast.makeText(this, "Message Received, size: " + recBytes.size() , Toast.LENGTH_LONG).show();
+                //parseMsg(recBytes);
             }
             else {
                 Toast.makeText(this, "Received Blank Parcel", Toast.LENGTH_LONG).show();
@@ -314,7 +277,7 @@ public class MainActivity extends Activity
         //Successfully sent.
         shortToSend.clear();
         messagesToSendArray.clear();
-        inputBuffer.clear();
+        //inputBuffer.clear();
         index=0;
     }
 
@@ -324,14 +287,20 @@ public class MainActivity extends Activity
       /*  if (messagesToSendArray.size() == 0) {
             return null;
         }*/
+        //index=inputBuffer.size();//for debug, need do be on one phone.
         if (index == 0) {
             return null;
         }
         //We'll write the createRecords() method in just a moment
+        //inputBuffer=buildMsg.buildMsgSetTime();
+        //Ndef ndef = Ndef.get(tagFromIntent);
+        // double a=ndef.getMaxSize();
         NdefRecord[] recordsToAttach = createRecords();
         //When creating an NdefMessage we need to provide an NdefRecord[]
         return new NdefMessage(recordsToAttach);
     }
+
+
     public NdefRecord[] createRecords1() {
 
         NdefRecord[] records = new NdefRecord[messagesToSendArray.size()];
@@ -351,7 +320,7 @@ public class MainActivity extends Activity
         }
         return records;
     }
-    private void handleNfcIntent1(Intent NfcIntent) {
+  /*  private void handleNfcIntent1(Intent NfcIntent) {
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(NfcIntent.getAction())) {
             Parcelable[] receivedArray =
                     NfcIntent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
@@ -375,7 +344,7 @@ public class MainActivity extends Activity
                 Toast.makeText(this, "Received Blank Parcel", Toast.LENGTH_LONG).show();
             }
         }
-    }
+    }*/
     @Override
     public void onNewIntent(Intent intent) {
         handleNfcIntent(intent);
@@ -385,6 +354,85 @@ public class MainActivity extends Activity
         super.onResume();
         //updateTextViews();
         handleNfcIntent(getIntent());
+        if(recBytes.size()>0)
+            parseMsg(recBytes);
+    }
+
+    public void parseMsg(ArrayList<Byte> data)
+    {
+
+        RateData rateDataMsg;
+        EpisodeList episodeListMsg;
+        EcgData ecgDataMsg;
+        int index=0;
+        StringBuilder id= new StringBuilder();
+        int padding;
+       /* while(index<data.size())
+        {
+            id=parser.getMsgId(data,index);
+            index+=6;
+            switch (id.toString())
+            {
+                case "PATDAT":
+                    patientDataMsg=parser.parsePatientData(data,index);
+                    index+=patientDataMsg.dataLength;
+
+                case "ECGDAT":
+                    ecgDataMsg=parser.parseEcgData(data,index);
+                    index+=ecgDataMsg.dataLength;
+            }
+        }*/
+
+     /*   id=parser.getMsgId(data,index);
+        index+=6;
+
+        patientDataMsg=parser.parsePatientData(data,index);
+        index+=(patientDataMsg.dataLength*2)+26;
+        if((index%32)>0)
+            index+=(32-(index%32));
+
+
+        id=parser.getMsgId(data,index);
+        index+=6;
+
+        ecgDataMsg= parser.parseEcgData(data,index);
+        if (ecgDataMsg instanceof RateData)
+        {
+            rateDataMsg=(RateData)ecgDataMsg;
+            index+=(rateDataMsg.dataLength*2)+26;
+            if((index%32)>0)
+                index+=(32-(index%32));
+
+        }*/
+
+
+        id=parser.getMsgId(data,index);
+        index+=6;
+
+
+        ecgDataMsg=parser.parseEcgData(data,index);
+        if (ecgDataMsg instanceof RawEcgData)
+        {
+            rawEcgDataMsg=(RawEcgData) ecgDataMsg;
+            index+=(rawEcgDataMsg.dataLength*2)+26;
+            if((index%32)>0)
+                index+=(32-(index%32));
+
+        }
+
+        Toast.makeText(this, "Message Been analyzed" , Toast.LENGTH_LONG).show();
+       /* id=parser.getMsgId(data,index);
+        index+=6;
+
+        ecgDataMsg=parser.parseEcgData(data,index);
+        if (ecgDataMsg instanceof EpisodeList)
+        {
+            episodeListMsg=(EpisodeList)ecgDataMsg;
+            index+=(episodeListMsg.dataLength*2)+26;
+            if((index%32)>0)
+                index+=(32-(index%32));
+        }*/
+
     }
 }
 
